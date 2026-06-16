@@ -1,14 +1,13 @@
 <?php
 
-class RateService {
-    private string $cacheDir;
-    private array $currencies;
-    private string $apiUrlPattern = 'https://api.coinbase.com/v2/exchange-rates?currency=%s';
+final class RateService {
+    private const CACHE_TTL_SECONDS = 60;
+    private const API_URL_PATTERN = 'https://api.coinbase.com/v2/exchange-rates?currency=%s';
 
-    public function __construct(string $cacheDir, array $currencies) {
-        $this->cacheDir = $cacheDir;
-        $this->currencies = $currencies;
-    }
+    public function __construct(
+        private readonly string $cacheDir,
+        private readonly array $currencies,
+    ) {}
 
     public function getRates(string $crypto, string $currency = ''): array {
         $data = $this->getRatesFromCacheOrApi($crypto);
@@ -17,9 +16,8 @@ class RateService {
             $currency = strtoupper($currency);
             if (isset($data[$currency])) {
                 return $this->formatRate($currency, $data[$currency]);
-            } else {
-                throw new \InvalidArgumentException('Currency not found');
             }
+            throw new \InvalidArgumentException('Currency not found');
         }
 
         $formattedRates = [];
@@ -31,13 +29,13 @@ class RateService {
 
         return $formattedRates;
     }
-    
+
     public function calculate(string $crypto, float $amount, string $currency): array {
         $rates = $this->getRates($crypto, $currency);
         $calc = $amount * $rates['rate'];
-        
-        $formatter = new NumberFormatter(MY_LOCALE, NumberFormatter::CURRENCY);
-        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 8);
+
+        $formatter = new \NumberFormatter(MY_LOCALE, \NumberFormatter::CURRENCY);
+        $formatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 8);
         $calcFormatted = $formatter->formatCurrency($calc, $currency);
 
         return [
@@ -55,7 +53,7 @@ class RateService {
         $cacheFile = $this->cacheDir . '/rates_' . $crypto . '.json';
         $cacheTime = $this->cacheDir . '/rates_' . $crypto . '.time';
 
-        if (file_exists($cacheFile) && file_exists($cacheTime) && (time() - filemtime($cacheTime) < 60)) {
+        if (file_exists($cacheFile) && file_exists($cacheTime) && (time() - filemtime($cacheTime) < self::CACHE_TTL_SECONDS)) {
             $cachedData = json_decode(file_get_contents($cacheFile), true);
             if (json_last_error() === JSON_ERROR_NONE && isset($cachedData['data']['rates'])) {
                 return $cachedData['data']['rates'];
@@ -80,7 +78,7 @@ class RateService {
             throw new \RuntimeException('Failed to initialize cURL');
         }
 
-        $apiUrl = sprintf($this->apiUrlPattern, $crypto);
+        $apiUrl = sprintf(self::API_URL_PATTERN, $crypto);
 
         curl_setopt_array($ch, [
             CURLOPT_URL => $apiUrl,
@@ -90,7 +88,7 @@ class RateService {
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 3,
-            CURLOPT_USERAGENT => 'Mozilla/5.0'
+            CURLOPT_USERAGENT => 'Mozilla/5.0',
         ]);
 
         $response = curl_exec($ch);
@@ -106,7 +104,7 @@ class RateService {
     }
 
     private function formatRate(string $code, float $rate): array {
-        $formatter = new NumberFormatter(MY_LOCALE, NumberFormatter::CURRENCY);
+        $formatter = new \NumberFormatter(MY_LOCALE, \NumberFormatter::CURRENCY);
         return [
             'code' => $code,
             'name' => $this->currencies[$code],

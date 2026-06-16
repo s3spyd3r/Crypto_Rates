@@ -14,7 +14,7 @@ const META_INDIVIDUAL_TITLE = 'Crypto Rates For - ';
 
 const META_DESCRIPTION = 'A PHP app to display live crypto rates for multiple cryptocurrencies.';
 
-const SUPPORTED_CRYPTOS = ['ETH', 'BTC', 'LTC'];
+const SUPPORTED_CRYPTOS = ['ETH', 'BTC', 'LTC', 'BNB', 'XRP', 'SOL', 'ADA', 'LINK'];
 const DEFAULT_CRYPTO = 'ETH';
 
 $debug = true;
