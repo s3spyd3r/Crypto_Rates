@@ -1,10 +1,10 @@
-# Crypto Rates
+# Crypto Rates PHP
 
 PHP Cryptocurrency ticker & calculator website. It supports multiple cryptocurrencies and 80 fiat currencies, with the ability to change the default crypto and currency.
 
 ## Features
 
--   **Multi-Crypto Support:** Supports multiple cryptocurrencies (ETH, BTC, LTC by default).
+-   **Multi-Crypto Support:** Supports multiple cryptocurrencies (ETH, BTC, LTC, BNB, XRP, SOL, ADA, and LINK by default).
 -   **80 Fiat Currencies:** Exchange rates for 80 fiat currencies.
 -   **Live Rates:** API updates every 60 seconds.
 -   **JSON Data Cache:** Caches the API response to improve performance.
@@ -29,7 +29,7 @@ PHP Cryptocurrency ticker & calculator website. It supports multiple cryptocurre
 
 ### Prerequisites
 
--   A web server with PHP 7.4 or higher (e.g., [XAMPP](https://www.apachefriends.org/index.html), [WAMP](http://www.wampserver.com/en/), [MAMP](https://www.mamp.info/en/)).
+-   A web server with PHP 8.3 or higher (e.g., [XAMPP](https://www.apachefriends.org/index.html), [WAMP](http://www.wampserver.com/en/), [MAMP](https://www.mamp.info/en/)).
 -   [Composer](https://getcomposer.org/) installed.
 -   The `curl` and `intl` PHP extensions must be enabled in your `php.ini` file.
 
